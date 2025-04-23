@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Keiron Coolen COMP 272 Section 001
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -105,6 +105,34 @@ public class Graph {
   public int findRoot() {
 
     // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
-  } 
+
+    /*
+      * The method starts by initializing an array `inDegrees` to track the number of incoming edges for each vertex.
+      * It then iterates over all vertices and their adjacent vertices (edges), incrementing the in-degree for the destination vertex.
+      * Afterward, it searches for a vertex with no incoming edges by checking if its in-degree is zero.
+      * If more than one such vertex is found, it returns -1 indicating there are multiple roots.
+      * If no vertex with zero in-degree is found, it returns -1 to indicate no root exists.
+      * If exactly one root is found, it returns the value of that root vertex.
+      */
+
+    int[] inDegrees = new int[numVertices];
+    for (int i = 0; i < numVertices; i++) {
+      for (int dest : adjListArr[i]) {
+        inDegrees[dest]++;
+      }
+    }
+    int rootIndex = -1;
+    for (int i = 0; i < numVertices; i++) {
+      if (inDegrees[i] == 0) {
+        if (rootIndex != -1) {
+          return -1;
+        }
+        rootIndex = i;
+      }
+    }
+    if (rootIndex == -1) {
+      return -1; 
+    }
+    return vertexValues.get(rootIndex);
+    } 
 }

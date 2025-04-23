@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   ADD YOUR NAME / SECTION NUMBER HERE
+ *   Keiron Coolen COMP 272 Section 001
  *
  *   This java file contains the problem solutions of canFinish and
  *   numGroups methods.
@@ -81,9 +81,51 @@ class ProblemSolutions {
         ArrayList<Integer>[] adj = getAdjList(numExams, 
                                         prerequisites); 
 
-        // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
 
+        // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
+
+        /*
+        * Perform DFS from each unvisited node to detect cycles.
+        * If a cycle is found during depth first search, it means there is a circular dependency
+        * among prerequisites, and it's impossible to finish all exams.
+        * If all nodes are processed without finding a cycle, return true.
+        */
+
+        int[] visited = new int[numNodes];
+
+        for (int i = 0; i < numNodes; i++) {
+            if (visited[i] == 0 && !depthFirstSearch(i, adj, visited)) {
+                return false;  
+            }
+        }
+
+        return true;
+
+    }
+
+    private boolean depthFirstSearch(int node, ArrayList<Integer>[] adj, int[] visited) {
+        /*
+            * Perform a depth first search from the current node to detect cycles.
+            * A node marked as "visiting" (1) means we've encountered a back edge — cycle found.
+            * A node marked as "visited" (2) means it's already been safely processed.
+            * Mark the current node as visiting, 
+            * The neighbours are recursively check
+            * The node is finally marked as visited if no cycles are found.
+        */
+        if (visited[node] == 1) {
+            return false;
+        }
+        if (visited[node] == 2) {
+            return true;
+        }
+        visited[node] = 1;
+        for (int neighbor : adj[node]) {
+            if (!depthFirstSearch(neighbor, adj, visited)) {
+                return false;  
+            }
+        }
+        visited[node] = 2;
+        return true;
     }
 
 
@@ -192,7 +234,34 @@ class ProblemSolutions {
 
         // YOUR CODE GOES HERE - you can add helper methods, you do not need
         // to put all code in this method.
-        return -1;
+
+        /*
+            * Perform DFS on unvisited nodes to find connected groups.
+            * Each DFS call identifies a new group and increments the count.
+            * The final count represents the total number of connected groups in the graph.
+            */
+        boolean[] visited = new boolean[numNodes];
+        int groupCount = 0;
+        for (int k = 0; k < numNodes; k++) {
+            if (!visited[k]) {
+                dfs(k, visited, graph);
+                groupCount++;
+            }
+        }
+        return groupCount;
     }
 
+    private void dfs(int node, boolean[] visited, Map<Integer, List<Integer>> graph) {
+        /*
+        * Depth First Search is used to mark all nodes in the same group as visited.
+        * Starting from the given node, the neightbours that have not been visited are recursively checked
+        * It marks all nodes connected to the starting node as part of the same component.
+        */
+        visited[node] = true;
+        for (int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, visited, graph);
+            }
+        }
+    }
 }
